@@ -1,0 +1,3 @@
+<?php
+
+// Write your SQL Database Connection Details below.

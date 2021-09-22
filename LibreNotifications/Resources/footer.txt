@@ -1,0 +1,84 @@
+// If you want to use an External Webook to pass data to your own services, enter this below also. You will also need to set up the below variables ($Title etc) on your external service. If the URL is Blank (Like '') then the External Webhook (HTTP GET) will be DISABLED
+
+$webhookurl = "";
+
+// No need to modify anything below this line
+
+$Title = $_GET["Title"];
+$Message = $_GET["Message"];
+$ParamID = $_GET["ParamID"];
+$Dismiss = $_GET["Dismiss"];
+  
+// Cleanse Data
+$Title = preg_replace ('/[^A-Za-z0-9 ]/', '', $Title);
+$Message = preg_replace ('/[^A-Za-z0-9 ]/', '', $Message);
+$ParamID = preg_replace ('/[^0-9]/', '', $ParamID);
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error)
+{
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// If Dismiss All is added to the Webhook URL, Change any "Resolved=0" to 1
+
+if ($Dismiss == 'All')
+{
+    $sql = "UPDATE Data set `Resolved` = 1";
+    echo "Attempting to Dismiss all Notifications<br><br>";
+}
+
+//Dismiss Single Notification
+
+if ($Dismiss !== null && $Dismiss !== 'All'){
+	$sql = "UPDATE Data set `Resolved` = 1 WHERE `ParamID` = '$Dismiss'";
+    echo "Attempting to Dismiss Single Notification<br><br>";
+}
+
+// As long as there is no DismissAll=0 on the webhook URL, insert passed Notification Details into the Database
+
+if ($Dismiss == null && $ParamID !== null && $ParamID !== '')
+{
+    $sql = "INSERT INTO Data (ParamID, Title, Message)
+VALUES ('$ParamID', '$Title', '$Message')";
+    echo "Attempting to create record<br><br>";
+}
+
+// Run SQL Query - If Successful/Failed, Write results to page
+
+if ($conn->query($sql) === true)
+{
+    echo "Success<br><br>";
+}
+else
+{
+    echo "Error: " . $sql . "<br>" . $conn->error;
+}
+
+// Close Connection
+
+$conn->close();
+
+//Finally, If enabled, pass data to external webhook
+
+if ($webhookurl !== '' && $webhookurl !== NULL)
+{
+$curl = curl_init();
+
+//Converting spaces to avoid common webhook errors - Don't worry, they will still be spaces in the end!
+
+$Message = str_replace(' ', '%20', $Message);
+$Title = str_replace(' ', '%20', $Title);
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => $webhookurl.'?ParamID='.$ParamID.'&Title='.$Title.'&Message='.$Message.'&Dismiss='.$Dismiss
+));
+echo 'Attempting to forward data to External Webhook - Results Below:<br><br>';
+$response = curl_exec($curl);
+//
+//echo $response;
+}
+?>
