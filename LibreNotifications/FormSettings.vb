@@ -2,6 +2,7 @@
 Imports System.Text
 
 Public Class FormSettings
+    Private notification = New Media.SoundPlayer
     Private Sub FormSettings_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If My.Settings.First_Run = True Then
             MsgBox("Welcome to GlucoseNotifications. This app links to a MySQL data source to pull event data on Low/High Glucose Levels. Additional Setup is required on first run!", MsgBoxStyle.Information, "Welcome")
@@ -145,19 +146,19 @@ Public Class FormSettings
         Dim selectednotificationsound As Integer = SoundSelect.SelectedIndex
         Select Case selectednotificationsound
             Case 0
-                Dim notification = New Media.SoundPlayer(My.Resources.notification1)
+                notification = New Media.SoundPlayer(My.Resources.notification1)
                 notification.Play()
             Case 1
-                Dim notification = New Media.SoundPlayer(My.Resources.notification2)
+                notification = New Media.SoundPlayer(My.Resources.notification2)
                 notification.Play()
             Case 2
-                Dim notification = New Media.SoundPlayer(My.Resources.notification3)
+                notification = New Media.SoundPlayer(My.Resources.notification3)
                 notification.Play()
             Case 3
-                Dim notification = New Media.SoundPlayer(My.Resources.notification4)
+                notification = New Media.SoundPlayer(My.Resources.notification4)
                 notification.Play()
             Case 4
-                Dim notification = New Media.SoundPlayer(My.Resources.notification5)
+                notification = New Media.SoundPlayer(My.Resources.notification5)
                 notification.Play()
         End Select
     End Sub
@@ -190,5 +191,9 @@ Public Class FormSettings
                 System.Diagnostics.Debug.WriteLine(ex)
             End Try
         End If
+    End Sub
+
+    Private Sub FormSettings_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+        notification.Stop()
     End Sub
 End Class

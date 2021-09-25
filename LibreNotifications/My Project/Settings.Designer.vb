@@ -233,6 +233,18 @@ Namespace My
                 Me("Health_Check_URL") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property GC_Custom_Sound() As String
+            Get
+                Return CType(Me("GC_Custom_Sound"),String)
+            End Get
+            Set
+                Me("GC_Custom_Sound") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

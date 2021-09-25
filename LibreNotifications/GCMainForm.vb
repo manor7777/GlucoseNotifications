@@ -77,13 +77,20 @@ Public Class GCMainForm
             End Try
             ResultsCount = dt.Rows.Count
             'End If
+            If AlertActive = True And ResultsCount = 0 Then
+                GCIcon.Visible = False
+                GCIcon.Visible = True
+                AlertActive = False
+            End If
             DataGridView1.Sort(DataGridView1.Columns(0), ListSortDirection.Descending)
         Catch ex As Exception
             System.Diagnostics.Debug.WriteLine("Refresh Data Failed - Error Ahead:" + ex.ToString)
         End Try
     End Function
     Public Function GracePeriod()
-
+        GCIcon.BalloonTipTitle = "GlucoseNotifications - Alert"
+        GCIcon.BalloonTipText = "Glucose Warning(s) Detected, Starting Alarm Countdown"
+        GCIcon.ShowBalloonTip(5000)
         System.Diagnostics.Debug.WriteLine("Starting Grace Period")
         'Give time to dismiss
         Dim dteFutureDate = Date.Now().AddMinutes(My.Settings.Grace_Period)
@@ -141,11 +148,7 @@ Public Class GCMainForm
 
                     If ResultsCount >= 1 Then
                         System.Diagnostics.Debug.WriteLine("Results greater than 1, giving grace period")
-
-                        GCIcon.BalloonTipTitle = "GlucoseNotifications - Alert"
-                        GCIcon.BalloonTipText = "Glucose Warning(s) Detected, Starting Alarm Countdown"
-                        GCIcon.ShowBalloonTip(5000)
-
+                        AlertActive = True
                         GraceActive = True
                         GracePeriod()
 

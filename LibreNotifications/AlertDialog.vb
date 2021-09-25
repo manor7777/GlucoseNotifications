@@ -1,4 +1,6 @@
 ﻿Public Class AlertDialog
+    Public soundnumber As Integer = My.Settings.soundnumber
+    Public notification = New Media.SoundPlayer
     Private Sub AlertDialog_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         BigSound.Start()
         LoadSettings()
@@ -45,28 +47,31 @@
         Me.Activate()
     End Sub
     Private Sub BigSound_Tick(sender As Object, e As EventArgs) Handles BigSound.Tick
-        Dim soundnumber As Integer = My.Settings.soundnumber
         Select Case soundnumber
             Case 1
-                Dim notification = New Media.SoundPlayer(My.Resources.notification1)
+                notification = New Media.SoundPlayer(My.Resources.notification1)
                 notification.Play()
             Case 2
-                Dim notification = New Media.SoundPlayer(My.Resources.notification2)
+                notification = New Media.SoundPlayer(My.Resources.notification2)
                 notification.Play()
             Case 3
-                Dim notification = New Media.SoundPlayer(My.Resources.notification3)
+                notification = New Media.SoundPlayer(My.Resources.notification3)
                 notification.Play()
             Case 4
-                Dim notification = New Media.SoundPlayer(My.Resources.notification4)
+                notification = New Media.SoundPlayer(My.Resources.notification4)
                 notification.Play()
             Case 5
-                Dim notification = New Media.SoundPlayer(My.Resources.notification5)
+                notification = New Media.SoundPlayer(My.Resources.notification5)
+                notification.Play()
+            Case 6
+                Dim notification = New Media.SoundPlayer(My.Settings.GC_Custom_Sound)
                 notification.Play()
         End Select
     End Sub
 
     Private Sub AlertDialog_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         BigSound.Stop()
+        notification.Stop()
         Me.Dispose()
     End Sub
 End Class
